@@ -1,0 +1,265 @@
+bank
+		
+			Assignment 3
+
+Problem Statement: Create the bank database with the foll table
+
+mysql> create database bank;
+mysql> use bank;
+
+1 branch_master(bracnh_id,bname) branch_id is primary key
+mysql> create table branch_master_45(branch_id int, bname varchar(20), primary key(branch_id));
+
+mysql> insert into branch_master_45 values("11", "katraj"),("12","aundh"),("13","pimpari");
+
+mysql> desc branch_master_45;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| branch_id | int         | NO   | PRI | NULL    |       |
+| bname     | varchar(20) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+mysql> select * from branch_master_45;
++-----------+---------+
+| branch_id | bname   |
++-----------+---------+
+|        11 | katraj  |
+|        12 | aundh   |
+|        13 | pimpari |
++-----------+---------+
+
+2 employee_master(emp_no,e_name,branch_id,salary ,dept,manager_id) empno primary key ,branch id foreign key, manager_id foreign key on delete set null
+mysql> create table employee_master_45(emp_no int,e_name varchar(20),branch_id int,salary int, dept varchar(20),manger_id int,primary key(emp_no), foreign key(manger_id) references employee_master_45(emp_no) on delete set null, foreign key(branch_id) references branch_master_45(branch_id) on delete set null);
+
+mysql> desc employee_master_45;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| emp_no    | int         | NO   | PRI | NULL    |       |
+| e_name    | varchar(20) | YES  |     | NULL    |       |
+| branch_id | int         | YES  | MUL | NULL    |       |
+| salary    | int         | YES  |     | NULL    |       |
+| dept      | varchar(20) | YES  |     | NULL    |       |
+| manger_id | int         | YES  | MUL | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+mysql> insert into employee_master_45 values(21,"abhishek",11,30000,"admin",null);
+Query OK, 1 row affected (0.12 sec)
+
+mysql> insert into employee_master_45 values(22,"sai",12,35000,"loan",21),(23,"kiran",13,40000,"deposit",22);
+
+mysql> select * from employee_master_45;
++--------+----------+-----------+--------+---------+-----------+
+| emp_no | e_name   | branch_id | salary | dept    | manger_id |
++--------+----------+-----------+--------+---------+-----------+
+|     21 | abhishek |        11 |  30000 | admin   |      NULL |
+|     22 | sai      |        12 |  35000 | loan    |        21 |
+|     23 | kiran    |        13 |  40000 | deposit |        22 |
++--------+----------+-----------+--------+---------+-----------+
+
+3 contact details(empid,emailid,phnno)emp_id forieign key and apply on delete set null constraint on emp_id
+mysql> insert into contact_details_45 values(21,"abhi@gmail.com",567665),(22,"sai@gmail.com",324432),(23,"kiru@gmail.com",880809);
+
+mysql> select * from contact_details_45;
++--------+----------------+--------+
+| emp_id | email_id       | phno   |
++--------+----------------+--------+
+|     21 | abhi@gmail.com | 567665 |
+|     22 | sai@gmail.com  | 324432 |
+|     23 | kiru@gmail.com | 880809 |
++--------+----------------+--------+
+
+4 emp_address_details(emp_id,street ,city,state)apply a foreign on emp_id  also apply on delete cascade constraint
+mysql> insert into emp_address_details_45 values(21,"a","latur","MH"),(22,"b","nanded","MH"),(23,"c","nagar","MH");
+
+mysql> select * from emp_address_details_45;
++--------+--------+--------+-------+
+| emp_id | street | city   | state |
++--------+--------+--------+-------+
+|     21 | a      | latur  | MH	   |
+|     22 | b      | nanded | MH    |
+|     23 | c      | nagar  | MH    |
++--------+--------+--------+-------+
+
+5 branch_address(branch_id,city,state)branch_id is foreign key
+mysql> create table branch_address_45(branch_id int, city varchar(20), state varchar(20), foreign key(branch_id) references branch_master_45(branch_id) on delete cascade);
+
+mysql> desc branch_address_45;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| branch_id | int         | YES  | MUL | NULL    |       |
+| city      | varchar(20) | YES  |     | NULL    |       |
+| state     | varchar(20) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+mysql> insert into branch_address_45 values(11,"pune","MH"),(12,"mumbai","MH"),(13,"latur","MH");
+
+mysql> select * from branch_address_45;
++-----------+--------+-------+
+| branch_id | city   | state |
++-----------+--------+-------+
+|        11 | pune   | MH    |
+|        12 | mumbai | MH    |
+|        13 | latur  | MH    |
++-----------+--------+-------+
+
+1. list the employee details along with the branch name using inner join and in order of employee no.
+mysql> select * from employee_master_45 
+	inner join branch_master_45 
+	on employee_master_45.branch_id = branch_master_45.branch_id 
+	order by employee_master_45.emp_no;
++--------+----------+-----------+--------+---------+-----------+-----------+---------+
+| emp_no | e_name   | branch_id | salary | dept    | manger_id | branch_id | bname   |
++--------+----------+-----------+--------+---------+-----------+-----------+---------+
+|     21 | abhishek |        11 |  30000 | admin   |      NULL |        11 | katraj  |
+|     22 | sai      |        12 |  35000 | loan    |        21 |        12 | aundh   |
+|     23 | kiran    |        13 |  40000 | deposit |        22 |        13 | pimpari |
++--------+----------+-----------+--------+---------+-----------+-----------+---------+
+
+2. list the details of employees who belong to admin dept along the branch name to which they belong.
+mysql> select * from employee_master_45 inner join branch_master_45 on employee_master_45.branch_id = branch_master_45.branch_id where employee_master_45.dept ="admin";
++--------+----------+-----------+--------+-------+-----------+-----------+--------+
+| emp_no | e_name   | branch_id | salary | dept  | manger_id | branch_id | bname  |
++--------+----------+-----------+--------+-------+-----------+-----------+--------+
+|     21 | abhishek |        11 |  30000 | admin |      NULL |        11 | katraj |
++--------+----------+-----------+--------+-------+-----------+-----------+--------+
+
+3. list the employee name along with the phn no and city(using inner join).
+mysql> select * from employee_master_45 inner join contact_details_45 on employee_master_45.emp_no = contact_details_45.emp_id inner join emp_address_details_45 on employee_master_45.emp_no =emp_address_details_45.emp_id;
++--------+----------+-----------+--------+---------+-----------+--------+----------------+--------+--------+--------+--------+-------+
+| emp_no | e_name   | branch_id | salary | dept    | manger_id | emp_id | email_id       | phno   | emp_id | street | city   | state |
++--------+----------+-----------+--------+---------+-----------+--------+----------------+--------+--------+--------+--------+-------+
+|     21 | abhishek |        11 |  30000 | admin   |      NULL |     21 | abhi@gmail.com | 567665 |     21 | a      | latur  | maha  |
+|     22 | sai      |        12 |  35000 | loan    |        21 |     22 | sai@gmail.com  | 324432 |     22 | b      | nanded | maha  |
+|     23 | kiran    |        13 |  40000 | deposit |        22 |     23 | kiru@gmail.com | 880809 |     23 | c      | nagar  | maha  |
++--------+----------+-----------+--------+---------+-----------+--------+----------------+--------+--------+--------+--------+-------+
+
+4. list the employee name with the contact details if have or not have any.
+mysql> select * from employee_master_45 left join contact_details_45 on emp_no = emp_id;
++--------+----------+-----------+--------+---------+-----------+--------+----------------+--------+
+| emp_no | e_name   | branch_id | salary | dept    | manger_id | emp_id | email_id       | phno   |
++--------+----------+-----------+--------+---------+-----------+--------+----------------+--------+
+|     21 | abhishek |        11 |  30000 | admin   |      NULL |     21 | abhi@gmail.com | 567665 |
+|     22 | sai      |        12 |  35000 | loan    |        21 |     22 | sai@gmail.com  | 324432 |
+|     23 | kiran    |        13 |  40000 | deposit |        22 |     23 | kiru@gmail.com | 880809 |
++--------+----------+-----------+--------+---------+-----------+--------+----------------+--------+
+
+
+5. list the employee's contact details irrespective of whether they are working or have left.
+mysql> select * from contact_details_45;
++--------+----------------+--------+
+| emp_id | email_id       | phno   |
++--------+----------------+--------+
+|     21 | abhi@gmail.com | 567665 |
+|     22 | sai@gmail.com  | 324432 |
+|     23 | kiru@gmail.com | 880809 |
++--------+----------------+--------+
+
+6. retrive the employee name and their respective manager name.
+mysql> select e.e_name as employee, m.e_name as manager from employee_master_45 as e, employee_master_45 as m where e.manger_id = m.emp_no;
++----------+----------+
+| employee | manager  |
++----------+----------+
+| sai      | abhishek |
+| kiran    | sai      |
++----------+----------+
+
+7. list the employee details along with the branch name using natural join.
+mysql> select * from employee_master_45 natural join branch_master_45;
++-----------+--------+----------+--------+---------+-----------+---------+
+| branch_id | emp_no | e_name   | salary | dept    | manger_id | bname   |
++-----------+--------+----------+--------+---------+-----------+---------+
+|        11 |     21 | abhishek |  30000 | admin   |      NULL | katraj  |
+|        12 |     22 | sai      |  35000 | loan    |        21 | aundh   |
+|        13 |     23 | kiran    |  40000 | deposit |        22 | pimpari |
++-----------+--------+----------+--------+---------+-----------+---------+
+
+8. list the employee names who works at vadgaon branch along with the city of that employee.
+mysql> select e.e_name, b.city from employee_master_45 as e , branch_address_45 as b where e.branch_id=b.branch_id;
++----------+--------+
+| e_name   | city   |
++----------+--------+
+| abhishek | pune   |
+| sai      | mumbai |
+| kiran    | latur  |
++----------+--------+
+
+9. find the employee who works at vadgaon branch with salaries more than 10000 and list the employee names with the streets and city they live in.
+mysql> select e_name, salary,street,city
+    -> from employee_master_45
+    -> inner join branch_master_45
+    -> on employee_master_45.branch_id = branch_master_45.branch_id
+    -> inner join emp_address_details_45
+    -> on employee_master_45.emp_no = emp_address_details_45.emp_id
+    -> where bname = "pimpari"
+    -> and salary > 30000;
++--------+--------+--------+-------+
+| e_name | salary | street | city  |
++--------+--------+--------+-------+
+| kiran  |  40000 | c      | nagar |
++--------+--------+--------+-------+
+
+10. find the employees who live and work in same city.
+mysql> select e_name from inner join emp_address_details_45 on emp_no = emp_id inner join branch_address_45 on employeee_master_45.branch _id = branch_address_45.branch_id where emp_address_details_45.city = branch_address_45.city;
+
+11. find the employee whose salary are more than the salary of everybody who works at branch katraj.
+SELECT e_name FROM employee_master_45 WHERE salary > (
+    -> SELECT MAX(salary) FROM employee_master_45 inner join branch_master_45 on employee_master_45.branch_id = branch_master_45.branch_id where bname ="katraj";
++--------+
+| e_name |
++--------+
+|  abhi  | 
++--------+
+
+12. create a total_employee view  which will contain total employees
+mysql> create view total_employees as select e_name from employee_master_45;
+Query OK, 0 rows affected (0.22 sec)
+
+mysql> select *from total_employees;
++----------+
+| e_name   |
++----------+
+| abhishek |
+| sai      |
+| kiran    |
++----------+
+
+13. Update total_employee view which will contain total employees at each branch. 
+14. list the branch name where employee have a salary more than 100000.
+mysql> select bname from employee_master_45 as e inner join branch_master_45 as b on e.branch_id=b.branch_id where salary>31000;
++---------+
+| bname   |
++---------+
+| aundh   |
+| pimpari |
++---------+
+2 rows in set (0.00 sec)
+
+15. create a view which will show the avg salary and the total salary at each branch.
+mysql> create view salary as select bname, avg(salary), sum(salary) from employee_master_45 inner join branch_master_45 on employee_master_45.branch_id = branch_master_45.branch_id group by bname;
+Query OK, 0 rows affected (0.14 sec)
+
+mysql> select * from salary;
++---------+-------------+-------------+
+| bname   | avg(salary) | sum(salary) |
++---------+-------------+-------------+
+| katraj  |  30000.0000 |       30000 |
+| aundh   |  35000.0000 |       35000 |
+| pimpari |  40000.0000 |       40000 |
++---------+-------------+-------------+
+
+16. find the employee who do not have a job at vadgaon branch. 
+mysql> select e_name from employee_master_45 e, branch_master_45 b where bname <> "vadgaon" and e.branch_id = b.branch_id;
++----------+
+| e_name   |
++----------+
+| abhishek |
+| sai      |
+| kiran    |
++----------+
+
+
+
+

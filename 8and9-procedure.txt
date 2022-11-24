@@ -1,0 +1,114 @@
+procedure
+
+mysql> create  database abhi_45_a5;
+Query OK, 1 row affected (5.14 sec)
+
+mysql> use abhi_45_a5;
+Database changed
+
+mysql> create table stud_marks(name varchar(30),total_marks int);
+Query OK, 0 rows affected (15.72 sec)
+
+mysql>
+mysql>  create table result(rollno int,Name varchar(20),class varchar(20));
+Query OK, 0 rows affected (0.22 sec)
+
+mysql> delimiter //
+mysql> 
+
+create procedure proc_grade45(in roll int,in name varchar(30),in marks int)
+begin
+declare grade varchar(30);
+if marks<=1500 and marks>=990 then set grade = 'distinction';
+elseif marks<=989 and marks>=900 then set grade = 'first class';
+elseif marks<=899 and marks>=825 then set grade = 'higher secondary class';
+else set grade = 'fail';
+end if;
+insert into result values(roll,name,grade);
+insert into stud_marks values(name,marks);
+end//
+
+Query OK, 0 rows affected (0.29 sec)
+
+mysql> delimiter ;
+mysql> call proc_grade45(45,"Abhishek",995);
+Query OK, 1 row affected (4.82 sec)
+
+mysql>
+mysql>  select * from result;
++--------+----------+-------------+
+| rollno | Name     | class       |
++--------+----------+-------------+
+|     45 | Abhishek | distinction |
++--------+----------+-------------+
+1 row in set (0.45 sec)
+
+mysql> call proc_grade45(55,"Shreyash",980);
+Query OK, 1 row affected (3.03 sec)
+
+mysql>
+mysql> select * from result;
++--------+----------+-------------+
+| rollno | Name     | class       |
++--------+----------+-------------+
+|     45 | Abhishek | distinction |
+|     55 | Shreyash | first class |
++--------+----------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> delimiter //
+mysql> create function student45(classname varchar(30))
+    -> returns int deterministic
+    -> begin
+    -> declare total int;
+    -> select distinct count(*) into total from result where class=classname;
+    -> return total;
+    -> end //
+Query OK, 0 rows affected (0.81 sec)
+
+mysql> delimiter ;
+
+mysql> select student45("fail");
++-------------------+
+| student45("fail") |
++-------------------+
+|                 0 |
++-------------------+
+1 row in set (1.61 sec)
+
+mysql> select student45("distinction");
++--------------------------+
+| student45("distinction") |
++--------------------------+
+|                        1 |
++--------------------------+
+1 row in set (0.00 sec)
+
+mysql> select student45("first class");
++--------------------------+
+| student45("first class") |
++--------------------------+
+|                        1 |
++--------------------------+
+1 row in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

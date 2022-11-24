@@ -1,0 +1,285 @@
+university dept
+
+	
+			Assignment 2A
+
+Title: Design and Develop SQL DDL statements which demonstrate the use of SQL objects such as Table, View, Index, Sequence, Synonym, different constraints.
+
+Problem Statement: Create the University Database having following specifications:
+        1. Department table( dept_no, dept_name, building_name )
+		Apply Unique constraint on name field.
+	2. Instructor table( ins_id, ins_name, dept_no, salary, mob_no )
+		Apply NOT NULL constraint on name field.
+	3. Course table( course_id of int data type, title, dept_no, credits )
+	4. Teaches table( teacher_id, course_id, semester, year )
+
+
+mysql> create table Dept_table(dept_no char(2), dept_name varchar(10),building_name varchar(10),unique key(dept_name));
+
+mysql> desc Dept_table;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| dept_no       | char(2)     | NO   | 	   |         |       |
+| dept_name     | varchar(20) | YES  | UNI | NULL    |       |
+| building_name | varchar(20) | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+
+
+mysql> create table Instructor_table(ins_id char(2), ins_name varchar(10) not null,dept_no char(2),salary int,mob_no int,primary key(ins_id));
+
+mysql> desc Instructor_table;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| ins_id   | char(2)     | NO   | PRI |         |       |
+| ins_name | varchar(10) | NO   |     | NULL    |       |
+| dept_no  | char(2)     | YES  |     | NULL    |       |
+| salary   | int         | YES  |     | NULL    |       |
+| mob_no   | int         | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+
+
+mysql> create table Course_table(course_id int(2),title varchar(10),dept_no char(2),credits int,primary key(course_id));
+
+mysql> desc Course_table;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| course_id | int(2)      | NO   | PRI | 0       |       |
+| title     | varchar(10) | YES  |     | NULL    |       |
+| dept_no   | char(2)     | YES  |     | NULL    |       |
+| credits   | int         | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+
+mysql> create table Teaches_table(teacher_id char(2),foreign key(teacher_id) references Instructor_table(ins_id),course_id int ,foreign key(course_id) references Course_table(course_id),semester int(2),year year);
+
+mysql> desc Teaches_table;
++------------+---------+------+-----+---------+-------+
+| Field      | Type    | Null | Key | Default | Extra |
++------------+---------+------+-----+---------+-------+
+| teacher_id | char(2) | YES  | MUL | NULL    |       |
+| course_id  | int(2)  | YES  | MUL | NULL    |       |
+| semester   | int     | YES  |     | NULL    |       |
+| year       | year(4) | YES  |     | NULL    |       |
++------------+---------+------+-----+---------+-------+
+
+
+Queries:
+
+1) Add primary key in department Table
+
+mysql> alter table Dept_table add primary key(dept_no);
+
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| dept_no       | char(2)     | NO   | PRI |         |       |
+| dept_name     | varchar(20) | YES  | UNI | NULL    |       |
+| building_name | varchar(20) | YES  |     | NULL    |       |
+| budget        | int	      | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+
+
+2)Add the Foreign Key in Instructor table
+
+mysql> alter table Instructor_table add foreign key(dept_no) references Dept_table(dept_no);
+
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| ins_id   | char(2)     | NO   | PRI |         |       |
+| ins_name | varchar(10) | NO   |     | NULL    |       |
+| dept_no  | char(2)     | YES  | MUL | NULL    |       |
+| salary   | int         | YES  |     | NULL    |       |
+| mob_no   | int         | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+
+3)Modify the department table by adding a column budget
+
+mysql> alter table Dept_table add column budget int;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| dept_no       | char(2)     | NO   | 	   |         |       |
+| dept_name     | varchar(20) | YES  | UNI | NULL    |       |
+| building_name | varchar(20) | YES  |     | NULL    |       |
+| budget        | int	      | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+
+
+4) Create unique index on mobile number of instructor table.
+mysql> create unique index uni_index on Instructor_table(mob_no);
+
++------------------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table            | Non_unique | Key_name  | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++------------------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Instructor_table |          0 | PRIMARY   |            1 | ins_id      | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
+| Instructor_table |          0 | uni_index |            1 | mob_no      | A         |           0 |     NULL | NULL   | YES  | BTREE      |         |               |
+| Instructor_table |          1 | dept_no   |            1 | dept_no     | A         |           0 |     NULL | NULL   | YES  | BTREE      |         |               |
+
+5) Create a view of instructor relation except the salary field.
+mysql>create view view_instructor as
+    -> select ins_id,ins_name,dept_no,mob_no from Instructor_table;
+
+mysql> select * from view_instructor;
++--------+----------+---------+------------+
+| ins_id | ins_name | dept_no | mob_no     |
++--------+----------+---------+------------+
+| I1     | abc      | D1      | 1765376456 |
++--------+----------+---------+------------+
+
+6) Insert record into instructor table using newly created viewname.
+
+mysql> insert into view_instructor values('I2','pqr','D1',7465364658);
+
+mysql> select * from view_instructor;
++--------+----------+---------+------------+
+| ins_id | ins_name | dept_no | mob_no     |
++--------+----------+---------+------------+
+| I1     | abc      | D1      | 1765376456 |
+| I2     | pqr      | D1      | 7465364658 |
++--------+----------+---------+------------+
+
+
+7) Update the department number of particular instructor using update view.
+
+mysql> update view_instructor set dept_no='d1' where ins_id = 'I2';
+
+mysql> select * from view_instructor;
++--------+----------+---------+------------+
+| ins_id | ins_name | dept_no | mob_no     |
++--------+----------+---------+------------+
+| I1     | abc      | D1      | 1765376456 |
+| I2     | pqr      | d1      | 7465364658 |
++--------+----------+---------+------------+
+
+
+8) Delete record of particular instructor from instructor table using newly created viewname.
+
+ mysql> delete from view_instructor where ins_id = 'I2';
+
+mysql> select * from view_instructor;
++--------+----------+---------+------------+
+| ins_id | ins_name | dept_no | mob_no     |
++--------+----------+---------+------------+
+| I1     | abc      | D1      | 1765376456 |
++--------+----------+---------+------------+
+9) Delete the last view.
+
+drop view view_instructor;
+
+10) Remove the Budget from department table.
+
+mysql> alter table Dept_table drop column budget;
+
+mysql> desc Dept_table;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| dept_no       | char(2)     | NO   | PRI |         |       |
+| dept_name     | varchar(10) | YES  | UNI | NULL    |       |
+| building_name | varchar(10) | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+
+
+11) Increase the size of the title field of course relation.
+
+mysql> desc Course_table;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| course_id | int(2)      | NO   | PRI | 0       |       |
+| title     | varchar(10) | YES  |     | NULL    |       |
+| dept_no   | char(2)     | YES  |     | NULL    |       |
+| credits   | int         | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+mysql> alter table Course_table modify column title varchar(30);
+
+mysql> desc Course_table;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| course_id | int(2)      | NO   | PRI | 0       |       |
+| title     | varchar(30) | YES  |     | NULL    |       |
+| dept_no   | char(2)     | YES  |     | NULL    |       |
+| credits   | int         | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+
+12) Delete the index from the instructor table.
+
+
+mysql> alter table Instructor_table drop index uni_index;
+
+mysql> desc Instructor_table;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| ins_id   | char(2)     | NO   | PRI |         |       |
+| ins_name | varchar(10) | NO   |     | NULL    |       |
+| dept_no  | char(2)     | YES  | MUL | NULL    |       |
+| salary   | int         | YES  |     | NULL    |       |
+| mob_no   | bigint(10)  | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+
+
+13)Rename the course table to another table name.
+
+mysql> rename table Course_table to Coursetable;
+
+mysql> show tables;
+
++-------------------------+
+| Tables_in_University	  |
++-------------------------+
+| Coursetable             |
+| Dept_table              |
+| Instructor_table        |
+| Teaches_table           |
++-------------------------+
+
+
+15) Delete the primary key from the department table.
+
+mysql> alter table Instructor_table drop foreign key Instructor_table;
+Query OK, 3 rows affected (0.16 sec)
+
+mysql> alter table Dept_table drop primary key;
+Query OK, 3 rows affected (0.16 sec)
+
+mysql> desc Dept_table;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| dept_no       | char(2)     | NO   |     |         |       |
+| dept_name     | varchar(10) | YES  | UNI | NULL    |       |
+| building_name | varchar(10) | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+
+
+17) Create database and show all databases
+
+mysql> create database demoDataBase;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |   |
+| Medical            |
+| sys                |
+| University         |
+| medical            |
+| mysql              |
+| performance_schema |
+| bank		     |
++--------------------+
+
+
+
+
+

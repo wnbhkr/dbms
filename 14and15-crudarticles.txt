@@ -1,0 +1,74 @@
+1. Create an Articles Collection and perform basic operations (CRUD) like Insert, Display,
+Update and Delete operations. E.g., Articles (Tittle, Content, Author, Author_age,
+Dop, Category, Comment). Comment is an embedded document also an array.
+Comment may consist of Name, Remarks keys.
+
+i. Insert couple of Documents.
+E.g. db.ar.find().pretty()
+{
+"_id" : ObjectId("59b77c07afd8d3e6b05304d7"),
+"Title" : "C",
+"Content" : "Procedural language",
+"Author" : "Yashwant Kanetkar",
+"Author_age" : 25,
+"DOP" : ISODate("2016-05-13T00:00:00Z"),
+"Category" : "IT",
+"Comment" : [
+{
+"Name" : "Sandesh",
+"Remarks" : "Very Good"
+},
+{
+"Name" : "Ravi",
+"Remarks" : "Nice"
+}
+]
+}
+db.ar.insertMany([])
+
+ii.Display the first document found in db
+ Db.ar.findOne();
+
+iii.Display first document belonging to a certain Author say “Sharma” found in db.
+ db.ar.findOne({Author:"Robert Lafore"})
+
+iv. Modify the comment made by certain person on a certain article.
+ >db.ar.update( { Title:"C++", "Comment.Name":"Rishi"}, {$set:{"Comment.
+$.Remarks":"Nice"}})
+ db.ar.findOne({Title:"C++"})
+
+v.
+Insert record with save method with and without objectID
+db.ar.save({_id:1,Title:"DBMS",Content:"Database",Author:"Silberscahtz",Aut
+hor_age:40,DOP:ISODate("2002-06-07"),
+Category:"Comp",Comment:
+[{Name:"Shai",Remarks:"Great"},{Name:"Dabang",Remarks:"Okk"}]})
+WriteResult({ "nMatched" : 0, "nUpserted" : 1, "nModified" : 0, "_id" : 1 })
+> db.ar.save({Title:"TOC",Content:"Computation",Author:"Kapil-
+Mishra",Author_age:44,DOP:ISODate("2005-06-07"),Category:"IT",Comment:[{Name:"Hope",Remarks:"Good book!"}]}),{Name:"Sallu",Remarks:"Nice Book"}
+db.ar.find().pretty()
+
+vi.Update collection with save method.
+db.ar.save({_id:1,Title:"DBMS",Content:"Structured
+Database",Author:"Silber",Author_age:50,DOP:ISODate("2002-06-
+07"),Category:"Comp",Comment:[{Name:"Shai",Remarks:"Great book"},
+{Name:"Dabang",Remarks:"Okk"}]})
+db.ar.findOne({_id:1})
+
+vii.Add one more comment for particular title
+db.ar.update({Title:"TOC"},{$push:{Comment:{Name:"Hope",Remarks:"Bad"}
+}})
+db.ar.findOne({Title:"TOC"})
+
+viii.Delete the documents whose author age is less than 18.
+db.ar.remove( { Author_age: { $lt: 18 } } )
+
+ix.Delete All Documents from a Collection
+To remove all documents in a collection, call the remove method with an
+empty query document {}. The following operation deletes all documents
+from the article collection:
+db.ar.remove( { } )
+
+x.
+Delete the Article collection
+db.ar.drop()

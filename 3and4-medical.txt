@@ -1,0 +1,305 @@
+medical
+
+			Assignment 2B
+
+Title:Write at least 10 SQLqueries  on  the  suitable  database  application  using SQL  DML statements
+Create a medical database having following table.
+1.	Patient table (pat_id,pat_name,date_adm,age,city);
+2.	Doctor table(doc_id,doc_name,qualification,exp,dept,city,salary);
+3.	Treats table(doc_id,pat_id,disease, fees); foriegn key doc_id,pat_id;
+            doc_id on delete cascade
+  pat_id on delete set null
+
+
+mysql> create database medical;
+
+mysql> use medical;
+
+mysql> create table Patient(pat_id varchar(5),pat_name varchar(10),date_adm date,age int,city varchar(15), email varchar(30),primary key(pat_id));
+
+mysql> create table Doctor(doc_id varchar(5),doc_name varchar(10),qualification varchar(15),experience int,department varchar(10),city varchar(15),salary int,primary key(doc_id));
+
+mysql> create table Treats(doc_id varchar(5),pat_id int,disease varchar(15),fees int,foreign key(doc_id)references Doctor(doc_id) on delete cascade,foreign key(pat_id)references Patient(pat_id) on delete set null);
+
+
+1.Insert atleast 5 records in each table;
+
+mysql> insert into patient values("p10" ,"abhi" ,"2022-02-02","41", "pune","abhi@gmail.com"),("p2","yash","2022-03-20 ","41","latur","yash@gmail.com"),("p4","akshay","2022-03-30","42","mumbai","akshay@gmail.com"),("p5","sid","2022-04-05","43"," delhi ","sid@gmail.com"),("p8","samarth","2022-05-22 ","44","chennai" ,"samarth@gmail.com");        
+ 
+mysql> select * from Patient;
++--------+----------+------------+------+------------+--------------------------+
+| pat_id | pat_name | date_adm   | age  | city       | email                    |
++--------+----------+------------+------+------------+--------------------------+
+| p10    | abhi     | 2022-02-02 |   41 | pune       | abhi@gmail.com  	        |
+| p2     | yash     | 2022-03-20 |   42 | latur      | yash@gmail.com           |
+| p4     | akshay   | 2022-03-30 |   43 | mumbai     | akshay@gmail.com         |
+| p5     | sid      | 2022-04-05 |   44 | delhi      | sid@gmail.com            |
+| p8     | samarth  | 2022-05-22 |   45 | chennai    | samarth@gmail.com        |
++--------+----------+------------+------+------------+--------------------------+
+
+
+mysql> insert into Doctor values("d2","suraj","B.D.M.S ","12","Dental", "solapur","50000"),("d4","shree","M.D","22","orthopedics","nashik ",""70000"),("d5","kiran ","M.D ","25","psychiatry","ausa","80000"),("d6","sai","B.A.M.S","20","cardiology","nilanga","60000"),("d8","chetan",M.B.B.S","21","opthalmogy","jalgaon","75000");
+
+mysql> select * from Doctor;
++--------+-----------+---------------+------------+-----------------+------------+----------+
+| doc_id | doc_name  | qualification | experience | department      | city       | salary   |
++--------+-----------+---------------+------------+-----------------+------------+----------+
+| d2     | suraj     | B.D.M.S       | 12         | Dental          | solapur    | 50000    |
+| d4     | shree     | M.D           | 22	  | orthopedics     | nashik     | 70000    |
+| d5     | kiran     | M.D           | 25	  | psychiatry      | ausa       | 80000    |
+| d6     | sai       | B.A.M.S       | 20	  | cardiology      | nilanga    | 60000    |
+| d8     | chetan    | M.B.B.S       | 21	  | opthalmology    | jalgaon    | 75000    |
++--------+-----------+---------------+------------+-----------------+------------+----------+
+
+
+mysql> insert into Treats values("d6","p2","tb",'10000")("d5","p5","cancer","25000"),("d4","p10","chickenpox","15000"),("d8","p4","diptheria","20000"),("d2","p8","hiv","30000");
+mysql> select * from Treats;
++--------+--------+----------------+----------+
+| doc_id | pat_id | disease        | fees     |
++--------+--------+----------------+----------+
+| d6     | p2     | tb             | 10000    |
+| d5     | p5     | cancer         | 25000    |
+| d4     | p10    | chickenpox     | 15000    |
+| d8     | p4     | diptheria      | 20000    |
+| d2     | p8     | hiv            | 30000    |
++--------+--------+----------------+----------+
+
+2.Display all the patient's name between the age group 18-50
+
+mysql> select pat_name from Patient where age between 18 and 50;
++----------+
+| pat_name |
++----------+
+| abhi     |
+| yash     |
+| akshay   |
+| sid      |
+|samarth   |
++----------+
+
+3.Display the list of doctors who are MD
+
+mysql> select doc_name from Doctor where qualification='M.D';
++----------+
+| doc_name |
++----------+
+| shree    |
+| kiran    |
++----------+
+
+
+4.Display the list of doctors whose exp is 20+ years
+
+mysql> select doc_name from Doctor where experience>='20';
++-----------+
+| doc_name  |
++-----------+
+| shree     |
+| kiran     |
+| sai       |
+| chetan    |
++-----------+
+
+5.Display patients suffering from Cancer
+
+mysql> select pat_name from Patient where pat_id  IN(select pat_id from Treats where disease='cancer');
++----------+
+| pat_name |
++----------+
+| sid      |
++----------+
+
+6.Display the patient name and the doctor name who is treating the cancer patient
+
+mysql> select pat_name, doc_name from Patient as P, Doctor as D, Treats as T where disease='cancer'and P.pat_id=T.pat_id and D.doc_id=T.doc_id;
++----------+----------+
+| pat_name | doc_name |
++----------+----------+
+| sid      | kiran    |
++----------+----------+
+
+7.Display the patient name, whose name starts with letter A, End with A,  having the exacts 5 letters
+
+mysql> select pat_name from Patient where pat_name like 'A___A';
+
+8.Remove all the records of patients with Pat_id =p10
+mysql> delete from Patient where pat_id='p10';
+
+mysql> select * from Patient;
++--------+----------+------------+------+------------+--------------------------+
+| pat_id | pat_name | date_adm   | age  | city       | email                    |
++--------+----------+------------+------+------------+--------------------------+
+| p2     | yash     | 2022-03-20 |   42 | latur      | yash@gmail.com           |
+| p4     | akshay   | 2022-03-30 |   43 | mumbai     | akshay@gmail.com         |
+| p5     | sid      | 2022-04-05 |   44 | delhi      | sid@gmail.com            |
+| p8     | samarth  | 2022-05-22 |   45 | chennai    | samarth@gmail.com        |
++--------+----------+------------+------+------------+--------------------------+
+
+
+9.Remove all the records of doctor Suhas
+
+mysql> delete from Doctor where doc_name="shree";
+mysql> select * from Doctor;
++--------+-----------+---------------+------------+-------------+------------+----------+
+| doc_id | doc_name  | qualification | experience | department  | city       | salary   |
++--------+-----------+---------------+------------+-------------+------------+----------+
+| d2     | suraj     | B.D.M.S       | 12         | Dental          | solapur    | 50000    |
+| d5     | kiran     | M.D           | 25	  | psychiatry      | ausa       | 80000    |
+| d6     | sai       | B.A.M.S       | 20	  | cardiology      | nilanga    | 60000    |
+| d8     | chetan    | M.B.B.S       | 21	  | opthalmology    | jalgaon    | 75000    |
++--------+-----------+---------------+------------+-----------------+------------+----------+
+
+
+10.change the qualification of doctor shubham from mbbs to md
+
+mysql> update Doctor set qualification="M.D" where doc_name="chetan";
+
+mysql> select * from Doctor;
++--------+-----------+---------------+------------+-------------+------------+----------+
+| doc_id | doc_name  | qualification | experience | department  | city       | salary   |
++--------+-----------+---------------+------------+-------------+------------+----------+
+| d2     | suraj     | B.D.M.S       | 12         | dental          | solapur    | 50000    |
+| d5     | kiran     | M.D           | 25	  | psychiatry      | ausa       | 80000    |
+| d6     | sai       | B.A.M.S       | 20	  | cardiology      | nilanga    | 60000    |
+| d8     | chetan    | M.D           | 21	  | opthalmology    | jalgaon    | 75000    |
++--------+-----------+---------------+------------+-----------------+------------+----------+
+12.Display dept wise total salary of the doctors;
+mysql> select sum(salary),department from Doctor group by department;
++-------------+-------------+
+| sum(salary) | department  |
++-------------+-------------+
+|    50000    | dental      |
+|    80000    | psychiatry  |
+|    60000    | cardilogy   |
+|    75000    | opthalmogy  |
++-------------+-------------+
+
+13. Find the dept , which has the highest avg salary
+
+mysql> select avg(salary),department from Doctor group by department having avg(salary) >= all (select avg(salary) from Doctor group by department);
++--------------+------------+
+| avg(salary)  | department |
++--------------+------------+
+|   80000      | psychiatry |
++--------------+------------+
+
+14.find the avg salary of docs in dentist dept;
+
+mysql> select avg (salary),department from Doctor group by department having department = "dental";
++--------------+------------+
+| avg (salary) | department |
++--------------+------------+
+|    50000     | dental     |
++--------------+------------+
+
+15.Find the dept where avg salary of the doctor is more than 50,000
+mysql> select avg(salary), department from Doctor group by department having avg(salary)>50000;
++--------------+-------------+
+| avg(salary)  | department  |
++--------------+-------------+
+|     50000    | dental      |
+|     80000    | psychiatry  |
+|     60000    | cardilogy   |
+|     75000    | opthalmogy  |
++-------- -----+-------------+
+
+
+16.find how many docs works in hospital;
+mysql> select count(doc_id) from Doctor;
++---------------+
+| count(doc_id) |
++---------------+
+|             4 |
++---------------+
+
+17.Find out how many doctors actually treated a patient;
+mysql> select count(doc_id) from Treats;
++---------------+
+| count(doc_id) |
++---------------+
+|             4 |
++---------------+
+
+18.list the cities in which either doctors or patient lives;
+mysql> select city from Doctor union select city from Patient;
++------------+
+| city       |
++------------+
+| Mumbai     |
+| Aurangabad |
+| Ahmedabad  |
+| Delhi      |
+| Chandigarh |
+| Ranchi     |
++------------+
+
+19.list the cites where both lives; List dname pname and their cities name if they live in same city.
+mysql> select doc_name, pat_name, p.city from Doctor as d, Patient as p where d.city=p.city;
++----------+----------+--------+
+| doc_name | pat_name | city   |
++----------+----------+--------+
+| Abhay    | Amira    | Mumbai |
+| Shubham  | Sudhir   | Delhi  |
++----------+----------+--------+
+
+20.Find the doctors who have not treated any patient
+mysql> select doc_id from Doctor where doc_id NOT IN (select doc_id from Treats);
+Empty set
+
+21. A)Display name of doctors and patients as a single column (union)
+mysql> select doc_name from Doctor union select pat_name from Patient;
++-----------+
+| doc_name  |
++-----------+
+| yash      |
+| akshay    |
+| sid       |
+| samarth   |
+| suraj     |
+| kiran     |
+| sai       |
+| chetan    |
++-----------+
+
+B)Let duplicate name appear many time (union all)
+ mysql> select doc_name from Doctor union all select pat_name from Patient;
++-----------+
+| doc_name  |
++-----------+
+| yash      |
+| akshay    |
+| sid       |
+| samarth   |
+| suraj     |
+| kiran     |
+| sai       |
+| chetan    |
++-----------+
+
+
+22.whats the total money collected so far from treatment of patients
+mysql> select sum(fees) from Treats;
++-----------+
+| sum(fees) |
++-----------+
+|  100000   |
++-----------+
+
+23.Find average salary of each department.
+mysql> select avg(salary),department from Doctor group by department;
++--------------+-------------+
+| avg(salary)  | department  |
++--------------+-------------+
+|     50000    | dental      |
+|     80000    | psychiatry  |
+|     60000    | cardilogy   |
+|     75000    | opthalmogy  |
++-------- -----+-------------+
+
+
+24.Display patient name which does not have email id.
+
+mysql>select pat_name from Patient where email is NULL;
+Empty set
+ 
+

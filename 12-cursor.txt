@@ -1,0 +1,107 @@
+ASSIGNMENT : 6
+•
+create table studentT(roll_no int,name varchar(20),marks int)
+Table created.
+•
+Statement 2
+insert into studentT values(1,'abc',39)
+1 row(s) inserted.
+•
+Statement 3
+insert into studentT values(2,'pqr',35)
+1 row(s) inserted.
+•
+Statement 4
+insert into studentT values(3,'xyz',41)
+1 row(s) inserted.
+•
+Statement 5
+insert into studentT values(4,'cde',37)
+1 row(s) inserted.
+•
+Statement 6
+insert into studentT values(5,'lmo',46)
+1 row(s) inserted.
+•
+Statement 7
+select * from studentT
+ROLL_NONAMEMARKS
+1abc39
+2pqr35
+3xyz41
+4cde37
+5lmo46
+5 rows selected.
+•
+Statement 8
+begin
+update studentT set marks=40 where marks between 35 and 39;
+if SQL%notfound then
+dbms_output.put_line('No records were updated');
+else
+dbms_output.put_line('Total records updated:'||sql%rowcount);
+end if;
+end;
+Statement processed.
+Total records updated:3•
+Statement 9
+select * from studentT
+ROLL_NONAMEMARKS
+1abc40
+2pqr40
+3xyz41
+4cde40
+5lmo46
+5 rows selected.
+•
+Statement 10
+create table newstudentT(roll_no int,name varchar(20),marks int)
+Table created.
+•
+Statement 11
+insert into newstudentT values(1,'abc',45)
+1 row(s) inserted.
+•
+Statement 12
+insert into newstudentT values(3,'xyz',45)
+1 row(s) inserted.
+•
+Statement 13
+insert into newstudentT
+1 row(s) inserted.
+•
+values(7,'xyzr',95)
+Statement 14
+insert into newstudentT values(8,'pqrs',65)
+1 row(s) inserted.
+•
+
+Statement 15
+declare
+cursor cur_s is select * from studentT;
+cursor cur_new(a int) is select * from newstudentT where roll_no =a;
+nrec newstudentT%rowtype;
+begin
+for srec in cur_s
+loop
+open cur_new(srec.roll_no);
+fetch cur_new into nrec;
+if cur_new%notfound then
+insert into newstudentT values(srec.roll_no,srec.name,srec.marks);
+end if;
+close cur_new;
+end loop;
+end;
+Statement processed.
+•
+Statement 16
+SELECT * FROM newstudentT
+ROLL_NONAMEMARKS
+1abc45
+3xyz45
+7xyzr95
+8pqrs65
+2pqr40
+4cde40
+5lmo46
+7 rows selected.

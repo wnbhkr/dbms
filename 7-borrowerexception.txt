@@ -1,0 +1,386 @@
+ASSIGNMENT : 4
+•
+create table Borrower(roll_in int,name varchar(15),date_of_issue
+date,name_of_book varchar(15),status varchar(15))
+Table created.
+•
+Statement 2
+create table Fine(roll_in int,fine_date date,amount int)
+Table created.
+•
+Statement 3
+insert into Borrower values(1,'Priya',to_date('2022-09-01','YYYY-MM-DD'),
+'TOC', 'i')
+1 row(s) inserted.
+•
+Statement 4
+declare
+roll int:= 1;
+b_name varchar(20):='TOC';
+date_issue date;
+no_days int;
+amount int:=0;
+no_days_to_be_fined int:=0;
+ex_valid_roll exception;
+
+begin
+if roll<0 then raise ex_valid_roll;
+end if;
+select date_of_issue into date_issue from Borrower where roll_in=roll and
+name_of_book=b_name;
+
+no_days:=sysdate-date_issue;
+if(no_days>15 and no_days<30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*5;
+elsif(no_days>30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*50;
+else
+amount:=0;
+end if;
+insert into Fine values(roll,sysdate,amount);
+update Borrower set status='r' where roll_in=roll and name_of_book=b_name;
+
+exception
+when ex_valid_roll then
+dbms_output.put_line('Roll no is not valid');
+when no_data_found then
+dbms_output.put_line('data not found');
+
+when others then
+dbms_output.put_line('other error ');•
+end;
+Statement processed.
+
+
+Statement 5
+select * from Borrower
+ROLL_INNAMEDATE_OF_ISSUE NAME_OF_BOOKSTATUS
+1Priya01-SEP-22r
+TOC
+
+Statement 6
+select * from Fine
+ROLL_INFINE_DATEAMOUNT
+127-SEP-2255
+Statement 9
+insert into Borrower values(1,'neha',to_date('2022-09-02','YYYY-MM-DD'),
+'TOC', 'i')
+1 row(s) inserted.
+
+Statement 10
+declare
+roll int:= 2;
+b_name varchar(20):='TOC';
+date_issue date;
+no_days int;
+amount int:=0;
+no_days_to_be_fined int:=0;
+ex_valid_roll exception;
+begin
+if roll<0 then raise ex_valid_roll;
+end if;
+select date_of_issue into date_issue from Borrower where roll_in=roll and
+name_of_book=b_name;
+no_days:=sysdate-date_issue;
+if(no_days>15 and no_days<30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*5;
+elsif(no_days>30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*50;
+else
+amount:=0;
+end if;
+insert into Fine values(roll,sysdate,amount);
+update Borrower set status='r' where roll_in=roll and name_of_book=b_name;
+exception
+when ex_valid_roll then
+dbms_output.put_line('Roll no is not valid');
+
+when no_data_found then
+dbms_output.put_line('data not found');
+when others then
+dbms_output.put_line('other error ');
+end;
+Statement processed.
+data not found
+
+Statement 11
+select * from Borrower
+ROLL_INNAMEDATE_OF_ISSUE NAME_OF_BOOKSTATUS
+1neha02-SEP-22TOCi
+1Priya01-SEP-22TOCr
+2 rows selected.
+
+Statement 12
+select * from Fine
+
+ROLL_INFINE_DATEAMOUNT
+127-SEP-2255
+Statement 13
+insert into Borrower values(3,'neha',to_date('2022-09-21','YYYY-MM-DD'),
+'CNS', 'i')
+1 row(s) inserted.
+•
+Statement 14
+declare
+roll int:= 3;
+b_name varchar(20):='CNS';
+date_issue date;
+no_days int;
+amount int:=0;
+no_days_to_be_fined int:=0;
+ex_valid_roll exception;
+begin
+if roll<0 then raise ex_valid_roll;
+end if;
+select date_of_issue into date_issue from Borrower where roll_in=roll and
+name_of_book=b_name;
+no_days:=sysdate-date_issue;
+if(no_days>15 and no_days<30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*5;
+elsif(no_days>30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*50;•
+
+else
+amount:=0;
+end if;
+insert into Fine values(roll,sysdate,amount);
+update Borrower set status='r' where roll_in=roll and name_of_book=b_name;
+exception
+when ex_valid_roll then
+dbms_output.put_line('Roll no is not valid');
+when no_data_found then
+dbms_output.put_line('data not found');
+when others then
+dbms_output.put_line('other error ');
+end;
+Statement processed.
+•
+Statement 15
+select * from Borrower
+ROLL_INNAMEDATE_OF_ISSUE NAME_OF_BOOKSTATUS
+1neha02-SEP-22TOCi
+1Priya01-SEP-22TOCr
+3neha21-SEP-22CNSr
+3 rows selected.
+•
+Statement 16
+select * from Fine
+ROLL_INFINE_DATEAMOUNT
+327-SEP-220
+127-SEP-2255
+2 rows selected.
+•
+Statement 17
+insert into Borrower values(2,'abhi',to_date('2022-09-21','YYYY-MM-DD'),
+'DBMS', 'i')
+1 row(s) inserted.
+•
+Statement 18
+declare
+roll int:= 2;
+b_name varchar(20):='DBMS';
+date_issue date;
+no_days int;
+amount int:=0;
+no_days_to_be_fined int:=0;
+ex_valid_roll exception;
+begin•
+
+if roll<0 then raise ex_valid_roll;
+end if;
+select date_of_issue into date_issue from Borrower where roll_in=roll and
+name_of_book=b_name;
+no_days:=sysdate-date_issue;
+if(no_days>15 and no_days<30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*5;
+elsif(no_days>30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*50;
+else
+amount:=0;
+end if;
+insert into Fine values(roll,sysdate,amount);
+update Borrower set status='r' where roll_in=roll and name_of_book=b_name;
+exception
+when ex_valid_roll then
+dbms_output.put_line('Roll no is not valid');
+when no_data_found then
+dbms_output.put_line('data not found');
+when others then
+dbms_output.put_line('other error ');
+end;
+Statement processed.
+•
+Statement 19
+select * from Borrower
+ROLL_INNAMEDATE_OF_ISSUE NAME_OF_BOOKSTATUS
+1neha02-SEP-22TOCi
+2abhi21-SEP-22DBMSr
+1Priya01-SEP-22TOCr
+3neha21-SEP-22CNSr
+4 rows selected.
+•
+Statement 20
+select * from Fine
+ROLL_INFINE_DATEAMOUNT
+327-SEP-220
+227-SEP-220
+127-SEP-2255
+3 rows selected.
+•
+Statement 21
+insert into Borrower values(4,'abhi',to_date('2022-09-15','YYYY-MM-DD'),
+'DBMS', 'i')
+1 row(s) inserted.
+•
+Statement 22
+declare
+roll int:= 4;
+b_name varchar(20):='DBMS';
+date_issue date;
+no_days int;
+amount int:=0;
+no_days_to_be_fined int:=0;
+ex_valid_roll exception;
+begin
+if roll<0 then raise ex_valid_roll;
+end if;
+select date_of_issue into date_issue from Borrower where roll_in=roll and
+name_of_book=b_name;
+no_days:=sysdate-date_issue;
+if(no_days>15 and no_days<30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*5;
+elsif(no_days>30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*50;
+else
+amount:=0;
+end if;
+insert into Fine values(roll,sysdate,amount);
+update Borrower set status='r' where roll_in=roll and name_of_book=b_name;
+exception
+when ex_valid_roll then
+dbms_output.put_line('Roll no is not valid');
+when no_data_found then
+dbms_output.put_line('data not found');
+when others then
+dbms_output.put_line('other error ');
+end;
+Statement processed.
+•
+Statement 23
+select * from Borrower
+ROLL_INNAMEDATE_OF_ISSUE NAME_OF_BOOKSTATUS
+1neha02-SEP-22TOCi
+4abhi15-SEP-22DBMSr2abhi21-SEP-22DBMSr
+1Priya01-SEP-22TOCr
+3neha21-SEP-22CNSr
+5 rows selected.
+•
+Statement 24
+select * from Fine
+ROLL_INFINE_DATEAMOUNT
+327-SEP-220
+227-SEP-220
+127-SEP-2255
+427-SEP-220
+4 rows selected.
+•
+Statement 25
+insert into Borrower values(4,'sai',to_date('2022-09-09','YYYY-MM-DD'),
+'DSA', 'i')
+1 row(s) inserted.
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Statement 26
+declare
+roll int:= 4;
+b_name varchar(20):='DSA';
+date_issue date;
+no_days int;
+amount int:=0;
+no_days_to_be_fined int:=0;
+ex_valid_roll exception;
+begin
+if roll<0 then raise ex_valid_roll;
+end if;
+select date_of_issue into date_issue from Borrower where roll_in=roll and
+name_of_book=b_name;
+no_days:=sysdate-date_issue;
+if(no_days>15 and no_days<30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*5;
+elsif(no_days>30)then
+no_days_to_be_fined:=no_days-15;
+amount:=no_days_to_be_fined*50;
+else
+amount:=0;
+end if;
+insert into Fine values(roll,sysdate,amount);
+update Borrower set status='r' where roll_in=roll and name_of_book=b_name;
+
+exception
+when ex_valid_roll then
+dbms_output.put_line('Roll no is not valid');
+when no_data_found then
+dbms_output.put_line('data not found');
+when others then
+dbms_output.put_line('other error ');
+end;
+Statement processed.
+•
+Statement 27
+select * from Borrower
+ROLL_INNAMEDATE_OF_ISSUE NAME_OF_BOOKSTATUS
+1neha02-SEP-22TOCi
+4abhi15-SEP-22DBMSr
+2abhi21-SEP-22DBMSr
+1Priya01-SEP-22TOCr
+3neha21-SEP-22CNSr
+4sai09-SEP-22DSAr
+6 rows selected.
+•
+Statement 28
+select * from Fine
+ROLL_INFINE_DATEAMOUNT
+327-SEP-220
+227-SEP-220
+127-SEP-2255
+427-SEP-2215
+427-SEP-220
+5 rows selected.
